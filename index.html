@@ -62,8 +62,10 @@
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ chatInput: input })
-        });
+          body: JSON.stringify({
+    question: input, // Change 'chatInput' to 'question'
+    sessionId: 'defaultSession' // Add the sessionId here
+}):
 
         if (!res.ok) throw new Error('Network response not OK');
 
