@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>UCBAC Stats Chatbot</title>
   <style>
     body {
@@ -14,7 +14,6 @@
       height: 100vh;
       margin: 0;
     }
-
     .chatbox {
       background: white;
       padding: 30px;
@@ -24,27 +23,20 @@
       max-width: 90%;
       text-align: center;
     }
-
-    input {
-      width: 100%;
+    input, button {
       padding: 10px;
       margin-top: 10px;
+      width: 100%;
       font-size: 16px;
     }
-
     button {
-      margin-top: 10px;
-      padding: 10px 20px;
-      font-size: 16px;
-      background: #007bff;
+      background-color: #007bff;
       color: white;
       border: none;
-      border-radius: 5px;
       cursor: pointer;
     }
-
     .response {
-      margin-top: 20px;
+      margin-top: 15px;
       font-weight: bold;
     }
   </style>
@@ -52,47 +44,34 @@
 <body>
   <div class="chatbox">
     <h2>UCBAC Stats Chatbot</h2>
-    <input type="text" id="questionInput" placeholder="Ask a question about UCBAC football..." />
-    <button onclick="askQuestion()">Ask</button>
-    <div id="responseBox" class="response"></div>
+    <input id="userInput" placeholder="Ask a question about UCBAC football..." />
+    <button onclick="sendMessage()">Ask</button>
+    <div id="response" class="response"></div>
   </div>
 
   <script>
-    async function askQuestion() {
-      const question = document.getElementById("questionInput").value.trim();
-      const responseBox = document.getElementById("responseBox");
+    async function sendMessage() {
+      const input = document.getElementById('userInput').value;
+      const responseBox = document.getElementById('response');
 
-      if (!question) {
-        responseBox.innerText = "Please enter a question.";
-        return;
-      }
-
-      responseBox.innerText = "Thinking...";
+      responseBox.textContent = 'Loading...';
 
       try {
-        const res = await fetch("https://javintaylor.app.n8n.cloud/webhook/ucbac-chat", {
-          method: "POST",
+        const res = await fetch('https://javintaylor.app.n8n.cloud/webhook/ucbac-chat', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
+            'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ chatInput: question }),
+          body: JSON.stringify({ chatInput: input })
         });
 
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
+        if (!res.ok) throw new Error('Network response not OK');
 
         const data = await res.json();
-
-        if (data.response) {
-          responseBox.innerText = data.response;
-        } else {
-          responseBox.innerText = "No response received.";
-        }
+        responseBox.textContent = data.response || 'No response received.';
       } catch (error) {
-        console.error("Fetch error:", error);
-        responseBox.innerText = "Error: Load failed";
+        console.error(error);
+        responseBox.textContent = 'Error: Load failed';
       }
     }
   </script>
